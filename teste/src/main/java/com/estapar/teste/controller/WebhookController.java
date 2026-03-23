@@ -2,6 +2,7 @@ package com.estapar.teste.controller;
 
 import com.estapar.teste.entity.WebhookEvent;
 import com.estapar.teste.service.ParkingService;
+import com.estapar.teste.service.WebhookService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,38 +23,16 @@ public class WebhookController {
 
     private static final Logger log = LoggerFactory.getLogger(WebhookController.class);
 
-    private final ParkingService parkingService;
+    private final WebhookService webhookService;
 
-    public WebhookController(ParkingService parkingService) {
-        this.parkingService = parkingService;
+    public WebhookController(WebhookService webhookService) {
+        this.webhookService = webhookService;
     }
 
     @PostMapping
     public ResponseEntity<Void> handleWebhook(@RequestBody WebhookEvent event) {
         log.info("Webhook recebido: tipo={} placa={}", event.getEventType(), event.getLicensePlate());
-
-        try {
-            switch (event.getEventType()) {
-                case "ENTRY" -> parkingService.handleEntry(
-                        event.getLicensePlate(),
-                        parkingService.parseDateTime(event.getEntryTime())
-                );
-                case "PARKED" -> parkingService.handleParked(
-                        event.getLicensePlate(),
-                        event.getLat(),
-                        event.getLng()
-                );
-                case "EXIT" -> parkingService.handleExit(
-                        event.getLicensePlate(),
-                        parkingService.parseDateTime(event.getExitTime())
-                );
-                default -> log.warn("Tipo de evento desconhecido: {}", event.getEventType());
-            }
-        } catch (Exception e) {
-            log.error("Erro ao processar webhook: {}", e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }
-
+        webhookService.process(event);
         return ResponseEntity.ok().build();
     }
 }
