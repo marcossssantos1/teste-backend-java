@@ -1,5 +1,6 @@
 package com.estapar.teste.dto;
 
+import com.estapar.teste.entity.Garage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record GarageDto(
@@ -21,4 +22,16 @@ public record GarageDto(
         Integer durationLimitMinutes
 
 ) {
+    public Garage toEntity() {
+        Garage s = new Garage();
+        s.setSector(sector);
+        s.setBasePrice(basePrice);
+        s.setMaxCapacity(maxCapacity);
+        s.setOpenHour(openHour);
+        s.setCloseHour(closeHour);
+        s.setDurationLimitMinutes(durationLimitMinutes);
+        s.setOpen(true);
+        return s;
+    }
+
 }
