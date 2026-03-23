@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 
@@ -155,12 +156,17 @@ public class ParkingService {
         log.info("Garagem inicializada: {} setores, {} vagas", sectors.size(), spots.size());
     }
 
+
     public LocalDateTime parseDateTime(String dateTimeStr) {
         if (dateTimeStr == null) return null;
-        try {
-            return OffsetDateTime.parse(dateTimeStr).toLocalDateTime();
-        } catch (Exception e) {
-            return LocalDateTime.parse(dateTimeStr, FLEXIBLE_FORMATTER);
+        TemporalAccessor parsed = FLEXIBLE_FORMATTER.parseBest(
+                dateTimeStr,
+                OffsetDateTime::from,
+                LocalDateTime::from
+        );
+        if (parsed instanceof OffsetDateTime odt) {
+            return odt.toLocalDateTime();
         }
+        return (LocalDateTime) parsed;
     }
 }
