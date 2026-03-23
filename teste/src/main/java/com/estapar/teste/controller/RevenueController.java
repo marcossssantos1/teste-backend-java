@@ -1,6 +1,7 @@
 package com.estapar.teste.controller;
 
 
+import com.estapar.teste.entity.RevenueRequest;
 import com.estapar.teste.entity.RevenueResponse;
 import com.estapar.teste.repository.RevenueEntryRepository;
 import org.springframework.http.ResponseEntity;
@@ -29,28 +30,6 @@ public class RevenueController {
         response.setTimestamp(LocalDateTime.now().toString());
 
         return ResponseEntity.ok(response);
-    }
-
-    static class RevenueRequest {
-        private String date;
-        private String sector;
-
-        public String getDate() {
-            return date;
-        }
-
-        public void setDate(String date) {
-            this.date = date;
-        }
-
-        public String getSector() {
-            return sector;
-        }
-
-        public void setSector(String sector) {
-            this.sector = sector;
-        }
-
     }
 
 

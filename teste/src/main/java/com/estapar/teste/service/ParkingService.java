@@ -15,12 +15,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
+
+
 
 @Service
 public class ParkingService {
 
     private static final Logger log = LoggerFactory.getLogger(ParkingService.class);
+
+    private static final DateTimeFormatter FLEXIBLE_FORMATTER = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            .optionalStart().appendOffsetId().optionalEnd()
+            .toFormatter();
 
     private final GarageRepository sectorRepository;
     private final ParkingSpotRepository spotRepository;
@@ -143,5 +153,14 @@ public class ParkingService {
         sectorRepository.saveAll(sectors);
         spotRepository.saveAll(spots);
         log.info("Garagem inicializada: {} setores, {} vagas", sectors.size(), spots.size());
+    }
+
+    public LocalDateTime parseDateTime(String dateTimeStr) {
+        if (dateTimeStr == null) return null;
+        try {
+            return OffsetDateTime.parse(dateTimeStr).toLocalDateTime();
+        } catch (Exception e) {
+            return LocalDateTime.parse(dateTimeStr, FLEXIBLE_FORMATTER);
+        }
     }
 }
