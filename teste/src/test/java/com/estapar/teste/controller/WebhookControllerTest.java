@@ -1,7 +1,14 @@
 package com.estapar.teste.controller;
 
 
-import com.estapar.parking.service.ParkingService;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,11 +17,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
+import com.estapar.teste.entity.WebhookEvent;
+import com.estapar.teste.service.ParkingService;
 
 @DisplayName("WebhookController — testes")
 class WebhookControllerTest {
@@ -30,10 +34,10 @@ class WebhookControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private WebhookController.WebhookEvent buildEvent(String type, String plate,
+    private WebhookEvent buildEvent(String type, String plate,
                                                       String entryTime, String exitTime,
                                                       Double lat, Double lng) {
-        WebhookController.WebhookEvent event = new WebhookController.WebhookEvent();
+        WebhookEvent event = new WebhookEvent();
         event.setEventType(type);
         event.setLicensePlate(plate);
         event.setEntryTime(entryTime);
