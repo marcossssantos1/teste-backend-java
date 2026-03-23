@@ -4,17 +4,19 @@ import com.estapar.teste.dto.GarageDto;
 import com.estapar.teste.dto.GarageResponseDto;
 import com.estapar.teste.dto.ParkingSpotDto;
 import com.estapar.teste.entity.Garage;
+import com.estapar.teste.entity.ParkingSpot;
 import com.estapar.teste.repository.GarageRepository;
 import com.estapar.teste.repository.ParkingSpotRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class GarageService {
+public class GarageService implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(GarageService.class);
 
@@ -61,7 +63,7 @@ public class GarageService {
             }
 
             for (ParkingSpotDto sp : response.spots()) {
-                ParkingSpotDto spot = spotRepository.findById(sp.id())
+                ParkingSpot spot = spotRepository.findById(sp.id())
                         .map(existing -> {
                             existing.setSector(sp.sector());
                             existing.setLat(sp.lat());
@@ -71,7 +73,6 @@ public class GarageService {
                         .orElseGet(sp::toEntity);
                 spotRepository.save(spot);
             }
-
             log.info("Garagem inicializada: {} setores, {} vagas",
                     sectorRepository.count(), spotRepository.count());
 
