@@ -35,18 +35,26 @@ git clone https://github.com/marcossssantos1/teste-backend-java.git
 
 ### 2. Configure o banco de dados
 
-Acesse o MySQL e crie o banco:
+O banco é criado automaticamente pela aplicação na primeira execução. Basta garantir que o MySQL está rodando e configurar as variáveis de ambiente com suas credenciais:
 
-```sql
-CREATE DATABASE parking_db;
+**Windows (PowerShell):**
+```powershell
+$env:DB_USER="root"
+$env:DB_PASS="sua_senha_aqui"
 ```
 
-Edite o arquivo `src/main/resources/application.properties` com suas credenciais:
+**Linux/macOS:**
+```bash
+export DB_USER=root
+export DB_PASS=sua_senha_aqui
+```
+
+O arquivo `src/main/resources/application.properties` já está configurado para usar essas variáveis:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/parking_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-spring.datasource.username=root
-spring.datasource.password=SUA_SENHA_AQUI
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASS}
 ```
 
 ### 3. Compile o projeto
@@ -245,3 +253,6 @@ curl -X GET http://localhost:3003/revenue \
   -d '{"date":"2026-03-24","sector":"A"}'
 ```
 
+        ├── controller/      # Testes dos controllers
+        └── service/         # Testes dos services
+```
