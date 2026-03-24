@@ -193,7 +193,7 @@ Response:
 
 ---
 
-## 💰 Regras de negócio
+## Regras de negócio
 
 ### Cobrança
 - Primeiros **30 minutos**: gratuito
@@ -251,8 +251,4 @@ curl -X POST http://localhost:3003/webhook \
 curl -X GET http://localhost:3003/revenue \
   -H "Content-Type: application/json" \
   -d '{"date":"2026-03-24","sector":"A"}'
-```
-
-        ├── controller/      # Testes dos controllers
-        └── service/         # Testes dos services
 ```
