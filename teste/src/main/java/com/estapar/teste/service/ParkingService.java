@@ -102,21 +102,22 @@ public class ParkingService {
     @Transactional
     public void handleExit(String licensePlate, LocalDateTime exitTime) {
         Vehicle record = vehicleRepository
-                .findTopByLicensePlateAndStatusNotOrderByEntryTimeDesc(
-                        licensePlate, RecordStatus.EXITED)
-                .orElseThrow(() -> new IllegalStateException("Registro não encontrado para: " + licensePlate));
+            .findTopByLicensePlateAndStatusNotOrderByEntryTimeDesc(
+                licensePlate, RecordStatus.EXITED)
+            .orElseThrow(() -> new IllegalStateException("Registro não encontrado para: " + licensePlate));
 
         if (record.getSpotId() != null) {
             ParkingSpot spot = spotRepository.findById(record.getSpotId())
-                    .orElseThrow(() -> new IllegalStateException("Vaga não encontrada: " + record.getSpotId()));
+                .orElseThrow(() -> new IllegalStateException("Vaga não encontrada: " + record.getSpotId()));
             spot.setOccupied(false);
             spotRepository.save(spot);
-
-            sectorRepository.findBySector(record.getSector()).ifPresent(s -> {
-                s.setOpen(true);
-                sectorRepository.save(s);
-            });
         }
+
+        // Sempre reabre o setor na saída, independente do spotId
+        sectorRepository.findBySector(record.getSector()).ifPresent(s -> {
+            s.setOpen(true);
+            sectorRepository.save(s);
+        });
 
         double charge = pricingService.calculateCharge(record.getEntryTime(), exitTime, record.getPriceApplied());
 
@@ -129,13 +130,12 @@ public class ParkingService {
             RevenueEntry revenue = new RevenueEntry();
             revenue.setSector(record.getSector());
             revenue.setDate(exitTime.toLocalDate());
-            revenue.setAmount(Math.round(charge * 100.0) / 100.0);
+            revenue.setAmount(charge);
             revenueEntryRepository.save(revenue);
         }
 
         log.info("EXIT: {} cobrado R$ {}", licensePlate, charge);
     }
-
     private void checkAndUpdateSectorStatus(String sector) {
         long total = spotRepository.countBySector(sector);
         long occupied = spotRepository.countBySectorAndOccupied(sector, true);

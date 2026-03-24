@@ -15,7 +15,11 @@ import com.estapar.teste.service.RevenueService;
 @RequestMapping("/revenue")
 public class RevenueController {
 
-    private RevenueService service;
+	private final RevenueService service;
+
+    public RevenueController(RevenueService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ResponseEntity<RevenueResponse> getRevenue(@RequestBody RevenueRequest request) {
