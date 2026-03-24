@@ -4,7 +4,7 @@ Sistema backend para gerenciamento de estacionamento — controle de vagas, entr
 
 ---
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 - Java 21
 - Spring Boot 4.0.4
@@ -15,7 +15,7 @@ Sistema backend para gerenciamento de estacionamento — controle de vagas, entr
 
 ---
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - Java 21 instalado
 - MySQL instalado e rodando
@@ -25,7 +25,7 @@ Sistema backend para gerenciamento de estacionamento — controle de vagas, entr
 
 ---
 
-## 🚀 Como rodar o projeto
+## Como rodar o projeto
 
 ### 1. Clone o repositório
 
@@ -140,7 +140,7 @@ INFO garage_simulator: Current revenue per sector: {"A": 81.0, "B": 8.2}
 
 ---
 
-## 📡 API
+## API
 
 ### Webhook — recebe eventos do simulador
 
@@ -213,7 +213,7 @@ Response:
 
 ---
 
-## 🧪 Testes
+## Testes
 
 ```bash
 mvn test
@@ -227,7 +227,7 @@ Cobertura:
 
 ---
 
-## 🔄 Simulação manual (modo debug)
+## Simulação manual (modo debug)
 
 Para testar o fluxo completo manualmente com mais de 30 minutos:
 
