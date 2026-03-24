@@ -14,62 +14,53 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // 400 — requisição malformada ou campo inválido
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
-        log.error("Argumento inválido: {}", ex.getMessage());
-        return build(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+		log.error("Argumento inválido: {}", ex.getMessage());
+		return build(HttpStatus.BAD_REQUEST, ex.getMessage());
+	}
 
-    // 400 — body JSON inválido ou ausente
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleNotReadable(HttpMessageNotReadableException ex) {
-        log.error("Body inválido: {}", ex.getMessage());
-        return build(HttpStatus.BAD_REQUEST, "Corpo da requisição inválido ou ausente.");
-    }
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ErrorResponse> handleNotReadable(HttpMessageNotReadableException ex) {
+		log.error("Body inválido: {}", ex.getMessage());
+		return build(HttpStatus.BAD_REQUEST, "Corpo da requisição inválido ou ausente.");
+	}
 
-    // 404 — recurso não encontrado
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(NoSuchElementException ex) {
-        log.error("Recurso não encontrado: {}", ex.getMessage());
-        return build(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
+	@ExceptionHandler(NoSuchElementException.class)
+	public ResponseEntity<ErrorResponse> handleNotFound(NoSuchElementException ex) {
+		log.error("Recurso não encontrado: {}", ex.getMessage());
+		return build(HttpStatus.NOT_FOUND, ex.getMessage());
+	}
 
-    // 409 — conflito de estado (ex: estacionamento lotado, vaga já ocupada)
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
-        log.error("Conflito de estado: {}", ex.getMessage());
-        return build(HttpStatus.CONFLICT, ex.getMessage());
-    }
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex) {
+		log.error("Conflito de estado: {}", ex.getMessage());
+		return build(HttpStatus.CONFLICT, ex.getMessage());
+	}
 
-    // 422 — entidade não processável (ex: dados semanticamente inválidos)
-    @ExceptionHandler(UnprocessableEntityException.class)
-    public ResponseEntity<ErrorResponse> handleUnprocessable(UnprocessableEntityException ex) {
-        log.error("Entidade não processável: {}", ex.getMessage());
-        return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
-    }
+	@ExceptionHandler(UnprocessableEntityException.class)
+	public ResponseEntity<ErrorResponse> handleUnprocessable(UnprocessableEntityException ex) {
+		log.error("Entidade não processável: {}", ex.getMessage());
+		return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+	}
 
-    // 422 — validação de campos com @Valid
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult().getFieldErrors().stream()
-                .map(f -> f.getField() + ": " + f.getDefaultMessage())
-                .findFirst()
-                .orElse("Dados inválidos.");
-        log.error("Erro de validação: {}", message);
-        return build(HttpStatus.UNPROCESSABLE_ENTITY, message);
-    }
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+		String message = ex.getBindingResult().getFieldErrors().stream()
+				.map(f -> f.getField() + ": " + f.getDefaultMessage()).findFirst().orElse("Dados inválidos.");
+		log.error("Erro de validação: {}", message);
+		return build(HttpStatus.UNPROCESSABLE_ENTITY, message);
+	}
 
-    // 500 — erro genérico inesperado
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
-        log.error("Erro inesperado: {}", ex.getMessage());
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor.");
-    }
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+		log.error("Erro inesperado: {}", ex.getMessage());
+		return build(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor.");
+	}
 
-    private ResponseEntity<ErrorResponse> build(HttpStatus status, String message) {
-        return ResponseEntity.status(status).body(new ErrorResponse(status.value(), message));
-    }
+	private ResponseEntity<ErrorResponse> build(HttpStatus status, String message) {
+		return ResponseEntity.status(status).body(new ErrorResponse(status.value(), message));
+	}
 }
