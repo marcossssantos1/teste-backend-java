@@ -1,4 +1,4 @@
-# 🅿️ Estapar Parking Management
+# Teste Estapar 
 
 Sistema backend para gerenciamento de estacionamento — controle de vagas, entrada/saída de veículos e cálculo de receita.
 
@@ -7,7 +7,7 @@ Sistema backend para gerenciamento de estacionamento — controle de vagas, entr
 ## 🛠️ Tecnologias
 
 - Java 21
-- Spring Boot 3.4.3
+- Spring Boot 4.0.4
 - MySQL 8
 - Maven
 - Docker (simulador)
@@ -30,8 +30,7 @@ Sistema backend para gerenciamento de estacionamento — controle de vagas, entr
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/parking-management.git
-cd parking-management
+git clone https://github.com/marcossssantos1/teste-backend-java.git
 ```
 
 ### 2. Configure o banco de dados
@@ -246,24 +245,3 @@ curl -X GET http://localhost:3003/revenue \
   -d '{"date":"2026-03-24","sector":"A"}'
 ```
 
----
-
-## 📁 Estrutura do projeto
-
-```
-src/
-├── main/
-│   ├── java/com/estapar/parking/
-│   │   ├── config/          # Configurações (RestTemplate)
-│   │   ├── controller/      # WebhookController, RevenueController, GlobalExceptionHandler
-│   │   ├── exception/       # Exceções customizadas
-│   │   ├── model/           # Entidades JPA
-│   │   ├── repository/      # Repositórios Spring Data
-│   │   └── service/         # ParkingService, PricingService, RevenueService, WebhookService
-│   └── resources/
-│       └── application.properties
-└── test/
-    └── java/com/estapar/parking/
-        ├── controller/      # Testes dos controllers
-        └── service/         # Testes dos services
-```
