@@ -1,9 +1,12 @@
 package com.estapar.teste.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
-import com.estapar.teste.entity.RevenueRequest;
-import com.estapar.teste.entity.RevenueResponse;
-import com.estapar.teste.repository.RevenueEntryRepository;
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,16 +15,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import com.estapar.teste.entity.RevenueRequest;
+import com.estapar.teste.entity.RevenueResponse;
+import com.estapar.teste.service.RevenueService;
 
 @DisplayName("RevenueController — testes")
-class RevenueControllerTest {
+public class RevenueControllerTest {
 
 	@Mock
-	private RevenueEntryRepository revenueEntryRepository;
+	private RevenueService revenueService;
 
 	@InjectMocks
 	private RevenueController revenueController;
@@ -41,8 +43,12 @@ class RevenueControllerTest {
 	@Test
 	@DisplayName("Deve retornar receita correta para setor e data")
 	void shouldReturnRevenueForSectorAndDate() {
-		when(revenueEntryRepository.sumAmountBySectorAndDate("A", LocalDate.of(2025, 1, 1)))
-				.thenReturn(121.50);
+		RevenueResponse mockResponse = new RevenueResponse();
+		mockResponse.setAmount(121.50);
+		mockResponse.setCurrency("BRL");
+		mockResponse.setTimestamp(LocalDateTime.now().toString());
+
+		when(revenueService.getRevenue("A", "2025-01-01")).thenReturn(mockResponse);
 
 		ResponseEntity<RevenueResponse> response = revenueController.getRevenue(buildRequest("2025-01-01", "A"));
 
@@ -53,10 +59,14 @@ class RevenueControllerTest {
 	}
 
 	@Test
-	@DisplayName("Deve retornar 0.00 quando não há receita para o setor e data")
+	@DisplayName("Deve retornar 0.00 quando não há receita")
 	void shouldReturnZeroWhenNoRevenue() {
-		when(revenueEntryRepository.sumAmountBySectorAndDate("B", LocalDate.of(2025, 1, 1)))
-				.thenReturn(null);
+		RevenueResponse mockResponse = new RevenueResponse();
+		mockResponse.setAmount(0.0);
+		mockResponse.setCurrency("BRL");
+		mockResponse.setTimestamp(LocalDateTime.now().toString());
+
+		when(revenueService.getRevenue("B", "2025-01-01")).thenReturn(mockResponse);
 
 		ResponseEntity<RevenueResponse> response = revenueController.getRevenue(buildRequest("2025-01-01", "B"));
 
@@ -69,8 +79,12 @@ class RevenueControllerTest {
 	@Test
 	@DisplayName("Deve retornar receita com duas casas decimais")
 	void shouldReturnRevenueWithTwoDecimalPlaces() {
-		when(revenueEntryRepository.sumAmountBySectorAndDate("B", LocalDate.of(2025, 1, 1)))
-				.thenReturn(49.20);
+		RevenueResponse mockResponse = new RevenueResponse();
+		mockResponse.setAmount(49.20);
+		mockResponse.setCurrency("BRL");
+		mockResponse.setTimestamp(LocalDateTime.now().toString());
+
+		when(revenueService.getRevenue("B", "2025-01-01")).thenReturn(mockResponse);
 
 		ResponseEntity<RevenueResponse> response = revenueController.getRevenue(buildRequest("2025-01-01", "B"));
 
@@ -82,8 +96,9 @@ class RevenueControllerTest {
 	@Test
 	@DisplayName("Deve lançar exceção quando data está em formato inválido")
 	void shouldThrowWhenDateFormatIsInvalid() {
-		assertThrows(Exception.class, () ->
-				revenueController.getRevenue(buildRequest("01/01/2025", "A"))
-		);
+		when(revenueService.getRevenue("A", "01/01/2025"))
+				.thenThrow(new IllegalArgumentException("Formato de data inválido."));
+
+		assertThrows(Exception.class, () -> revenueController.getRevenue(buildRequest("01/01/2025", "A")));
 	}
 }

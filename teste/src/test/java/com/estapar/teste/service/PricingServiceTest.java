@@ -27,10 +27,6 @@ class PricingServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // ---------------------------------------------------------------
-    // Testes de calculateCharge
-    // ---------------------------------------------------------------
-
     @Test
     @DisplayName("Deve ser gratuito nos primeiros 30 minutos exatos")
     void shouldReturnFreeFor30MinutesExact() {
@@ -88,10 +84,6 @@ class PricingServiceTest {
         // 90 minutos → ceil(90/60) = 2 horas × R$ 4.10 = R$ 8.20
         assertEquals(8.20, pricingService.calculateCharge(entry, exit, 4.10));
     }
-
-    // ---------------------------------------------------------------
-    // Testes de getDynamicPriceFactor
-    // ---------------------------------------------------------------
 
     @Test
     @DisplayName("Deve retornar fator 1.0 quando setor não tem vagas cadastradas")
